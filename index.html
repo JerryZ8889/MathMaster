@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>数学大师 Math Master</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="stats-card">
+            <div class="stat-item">
+                <span class="label">已练习</span>
+                <span id="total-count" class="value">0 Qs</span>
+            </div>
+            <div class="stat-item align-right">
+                <span class="label">正确率</span>
+                <span id="accuracy" class="value" style="color: #4CAF50;">0%</span>
+            </div>
+        </div>
+
+        <div class="operator-pill">
+            <button class="op-btn active" data-op="+">+</button>
+            <button class="op-btn" data-op="-">-</button>
+            <button class="op-btn" data-op="×">×</button>
+            <button class="op-btn" data-op="÷">÷</button>
+        </div>
+
+        <div class="question-container">
+            <span id="question-text">0 + 0 =</span>
+        </div>
+
+        <div class="answer-grid">
+            <button class="ans-btn"></button>
+            <button class="ans-btn"></button>
+            <button class="ans-btn"></button>
+            <button class="ans-btn"></button>
+        </div>
+
+        <div class="controls">
+            <button id="next-btn">下一题 NEXT</button>
+            <select id="range-select">
+                <option value="10">10 以内</option>
+                <option value="30">30 以内</option>
+                <option value="60">60 以内</option>
+                <option value="100">100 以内</option>
+            </select>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

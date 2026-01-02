@@ -6,7 +6,8 @@ body {
     display: flex;
     justify-content: center;
     height: 100vh;
-    touch-action: manipulation; /* 防止双击缩放 */
+    touch-action: manipulation;
+    overflow: hidden; /* 防止一些动画导致滚动条出现 */
 }
 
 #app {
@@ -30,9 +31,15 @@ body {
     box-sizing: border-box;
 }
 
+.stat-item {
+    text-align: center;
+    flex-grow: 1; /* 让三个项目均匀分布 */
+}
+.stat-item:first-child { text-align: left; }
+.stat-item:last-child { text-align: right; }
+
 .label { color: gray; font-size: 14px; display: block; }
 .value { font-size: 20px; font-weight: bold; }
-.align-right { text-align: right; }
 
 /* 运算符药丸按钮 */
 .operator-pill {
@@ -50,6 +57,7 @@ body {
     font-size: 18px;
     border-radius: 50px;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .op-btn.active { background: #3B82F6; color: white; }
@@ -81,8 +89,19 @@ body {
     transition: all 0.2s;
 }
 
-.ans-btn.correct { background: #4CAF50 !important; color: white; border-color: #4CAF50; }
-.ans-btn.wrong { background: #EF4444 !important; color: white; border-color: #EF4444; }
+/* 新增的动画效果 */
+.ans-btn.correct { 
+    background: #4CAF50 !important; 
+    color: white; 
+    border-color: #4CAF50;
+    animation: pulseCorrect 0.3s ease-out forwards; /* 答对时的弹跳 */
+}
+.ans-btn.wrong { 
+    background: #EF4444 !important; 
+    color: white; 
+    border-color: #EF4444; 
+    animation: pulseWrong 0.3s ease-out forwards; /* 答错时的弹跳 */
+}
 
 /* 底部 */
 .controls {
@@ -102,6 +121,7 @@ body {
     border-radius: 16px;
     font-weight: bold;
     font-size: 18px;
+    cursor: pointer;
 }
 
 #range-select {
@@ -109,4 +129,72 @@ body {
     border-radius: 16px;
     padding: 0 10px;
     border: 1px solid #ccc;
+    background-color: white;
+    font-weight: bold;
+    font-size: 16px;
+    appearance: none; /* 移除默认的下拉箭头 */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23222' stroke='%23222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+
+/* 动画 */
+@keyframes pulseCorrect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+@keyframes pulseWrong {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* 屏幕闪烁动画 */
+body.flash-green { animation: flashGreen 0.2s forwards; }
+@keyframes flashGreen {
+    0% { background-color: #F0F4F8; }
+    50% { background-color: #E8F5E9; /* 浅绿色 */ }
+    100% { background-color: #F0F4F8; }
+}
+body.flash-red { animation: flashRed 0.2s forwards; }
+@keyframes flashRed {
+    0% { background-color: #F0F4F8; }
+    50% { background-color: #FFEBEE; /* 浅红色 */ }
+    100% { background-color: #F0F4F8; }
+}
+
+/* 题目晃动动画 */
+.question-container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); perspective: 1000px; }
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* 夸奖语弹出 */
+.praise-popup {
+    position: fixed;
+    top: 50%; /* 改为50%更居中 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 60px; /* 字体更大 */
+    font-weight: bold;
+    color: #FFD700; /* 金色 */
+    text-shadow: 4px 4px 15px rgba(0,0,0,0.4); /* 更明显阴影 */
+    animation: zoomFade 1.2s ease-out forwards; /* 动画更长 */
+    z-index: 1000; /* 确保在最顶层 */
+    pointer-events: none; /* 不会阻挡点击 */
+    white-space: nowrap; /* 不换行 */
+}
+
+@keyframes zoomFade {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    20% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+    80% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
 }

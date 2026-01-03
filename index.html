@@ -11,16 +11,19 @@
     <div id="app">
         <div class="stats-card">
             <div class="stat-item">
-                <span class="label">Practiced</span>
-                <span id="total-count" class="value">0 Qs</span>
+                <span class="label">Count</span>
+                <span id="total-count" class="value">0</span>
             </div>
             <div class="stat-item">
                 <span class="label">Rank</span>
                 <span id="player-rank" class="value" style="color: #FFD700;">Rookie</span>
             </div>
-            <div class="stat-item align-right">
-                <span class="label">Accuracy</span>
+            <div class="stat-item">
+                <span class="label">Rate</span>
                 <span id="accuracy" class="value" style="color: #4CAF50;">0%</span>
+            </div>
+            <div class="stat-item align-right">
+                <button id="review-btn" class="secondary-btn">Review</button>
             </div>
         </div>
 
@@ -52,6 +55,18 @@
             </select>
         </div>
     </div>
+
+    <div id="review-page" class="hidden">
+        <div class="review-header">
+            <button id="back-btn">← BACK</button>
+            <h2>Mistakes</h2>
+            <button id="clear-btn" style="color: #EF4444; background:none; border:none; font-weight:bold;">CLEAR</button>
+        </div>
+        <div id="error-list" class="scroll-container">
+            <p id="no-errors">No mistakes yet! Keep going!</p>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

@@ -74,11 +74,18 @@ function generateQuestion() {
         num2 = Math.floor(Math.random() * num1) + 1;
         correctAnswer = num1 - num2;
     } else if (currentOp === '×') {
-        num1 = Math.floor(Math.random() * (Math.sqrt(maxRange))) + 1;
-        num2 = Math.floor(Math.random() * (maxRange / num1)) + 1;
+        // 优化乘法：确保两个因子分布均匀，不会只是1*N
+        num1 = Math.floor(Math.random() * (Math.sqrt(maxRange) - 1)) + 2; // 从2开始，避免1
+        num2 = Math.floor(Math.random() * (maxRange / num1 - 1)) + 1;
+        // 如果算出来是0或太小，兜底处理
+        if(num2 < 1) num2 = 1;
         correctAnswer = num1 * num2;
-    } else {
-        num2 = Math.floor(Math.random() * (maxRange / 2 - 1)) + 2;
+    } else { // ÷
+        // 优化除法：除数从2开始，避免除以1
+        let maxDivisor = Math.floor(maxRange / 2);
+        if (maxDivisor < 2) maxDivisor = 2;
+        num2 = Math.floor(Math.random() * (maxDivisor - 1)) + 2; 
+        
         const res = Math.floor(Math.random() * (maxRange / num2)) + 1;
         num1 = res * num2;
         correctAnswer = num1 / num2;
@@ -86,9 +93,20 @@ function generateQuestion() {
 
     document.getElementById('question-text').innerText = `${num1} ${currentOp} ${num2} =`;
 
+    // 选项生成：范围扩大一点以增加干扰项的难度
     let opts = new Set([correctAnswer]);
     while(opts.size < 4) {
-        let randomOption = Math.floor(Math.random() * (maxRange * 1.5));
+        // 干扰项在答案附近浮动，或者在 maxRange * 1.2 范围内
+        let randomOption;
+        if (Math.random() > 0.5) {
+             // 50% 概率生成接近正确答案的干扰项 (±10)
+             randomOption = correctAnswer + Math.floor(Math.random() * 20) - 10;
+             if (randomOption < 0) randomOption = 0; // 不出现负数
+        } else {
+             // 50% 概率生成大范围随机
+             randomOption = Math.floor(Math.random() * (maxRange * 1.2));
+        }
+        
         if (randomOption !== correctAnswer) opts.add(randomOption);
     }
     let shuffledOpts = Array.from(opts).sort(() => Math.random() - 0.5);
@@ -186,15 +204,12 @@ function updateStats() {
     document.getElementById('player-rank').innerText = currentRank;
 }
 
-// 按钮逻辑
 document.getElementById('review-btn').onclick = () => {
     document.getElementById('review-page').classList.remove('hidden');
 };
 document.getElementById('back-btn').onclick = () => {
     document.getElementById('review-page').classList.add('hidden');
 };
-
-// Clear Mistakes (仅清空错题)
 document.getElementById('clear-btn').onclick = () => {
     if(confirm("Clear all mistakes history?")) {
         errorBook = [];
@@ -202,15 +217,13 @@ document.getElementById('clear-btn').onclick = () => {
         saveData();
     }
 };
-
-// Reset Stats (仅重置主页面统计)
 document.getElementById('reset-btn').onclick = () => {
     if(confirm("Reset all game stats (Count, Rank, Accuracy)?")) {
         totalCount = 0;
         correctCount = 0;
         comboCount = 0;
-        updateStats(); // 更新界面
-        saveData(); // 保存归零后的状态
+        updateStats();
+        saveData();
     }
 };
 

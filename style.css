@@ -19,7 +19,6 @@ body {
     align-items: center;
 }
 
-/* 统计卡片 */
 .stats-card {
     width: 100%;
     background: white;
@@ -58,7 +57,6 @@ body {
     white-space: nowrap;
 }
 
-/* 运算符 */
 .operator-pill {
     margin-top: 20px;
     background: #E2E8F0;
@@ -78,7 +76,6 @@ body {
 }
 .op-btn.active { background: #3B82F6; color: white; }
 
-/* 题目与按钮 */
 .question-container {
     margin: 40px 0;
     font-size: 54px;
@@ -98,7 +95,8 @@ body {
     background: white;
     border: 2px solid #E2E8F0;
     border-radius: 16px;
-    font-size: 32px;
+    /* 修改：使用 clamp 确保大数字(如1000)在小屏上字体自动缩小一点，防止换行 */
+    font-size: clamp(24px, 5vw, 32px);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -111,7 +109,6 @@ body.flash-green { animation: flashGreen 0.2s forwards; }
 body.flash-red { animation: flashRed 0.2s forwards; }
 .question-container.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
 
-/* 底部控制 */
 .controls {
     margin-top: auto;
     width: 100%;
@@ -143,7 +140,6 @@ body.flash-red { animation: flashRed 0.2s forwards; }
     appearance: none;
 }
 
-/* 错题回顾页 */
 #review-page {
     position: fixed;
     top: 0;
@@ -168,21 +164,10 @@ body.flash-red { animation: flashRed 0.2s forwards; }
 }
 #back-btn { background: transparent; border: none; font-size: 18px; font-weight: bold; color: #3B82F6; cursor: pointer; }
 
-/* 新增：头部按钮组样式 */
-.header-actions {
-    display: flex;
-    gap: 15px; /* 两个按钮之间的间距 */
-}
-
-.action-btn {
-    background: none;
-    border: none;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-}
-.action-btn.reset { color: #F59E0B; /* 橙色 */ }
-.action-btn.clear { color: #EF4444; /* 红色 */ }
+.header-actions { display: flex; gap: 15px; }
+.action-btn { background: none; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
+.action-btn.reset { color: #F59E0B; }
+.action-btn.clear { color: #EF4444; }
 
 .scroll-container { flex: 1; overflow-y: auto; padding: 20px; box-sizing: border-box; }
 

@@ -6,12 +6,10 @@ let comboCount = 0;
 let errorBook = []; 
 
 const dingSound = new Audio('ding.mp3'); 
-// 赞美语
 const praises = ["Good!", "Great Job!", "Amazing!", "Unstoppable!"];
 const ranks = ["Rookie", "Explorer", "Hero", "Master"];
 const rankThresholds = [0, 10, 50, 100];
 
-// --- 存档功能 ---
 function saveData() {
     const data = { totalCount, correctCount, errorBook };
     localStorage.setItem('mathMasterData', JSON.stringify(data));
@@ -29,24 +27,20 @@ function loadData() {
     }
 }
 
-// --- 烟花逻辑 ---
 function triggerRandomConfetti() {
-    // 确保 confetti 库已加载
     if (typeof confetti === 'undefined') return;
-
     const modes = [
-        () => confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }), // 喷射
-        () => confetti({ particleCount: 100, angle: 90, spread: 360, origin: { x: Math.random(), y: Math.random() * 0.5 } }), // 随机炸
+        () => confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }),
+        () => confetti({ particleCount: 100, angle: 90, spread: 360, origin: { x: Math.random(), y: Math.random() * 0.5 } }),
         () => {
             var end = Date.now() + (1 * 1000);
             (function frame() {
                 confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
                 confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
                 if (Date.now() < end) requestAnimationFrame(frame);
-            }()); // 喷泉
+            }());
         }
     ];
-    // 随机选一个播放
     modes[Math.floor(Math.random() * modes.length)]();
 }
 
@@ -110,35 +104,28 @@ function checkAnswer(val, btn, correct) {
     const isFirstAttempt = wrongAnswers.size === 0;
 
     if (val === correct) {
-        // --- 答对逻辑 ---
         isSolved = true;
         btn.classList.add('correct');
         document.body.classList.add('flash-green');
         
-        // 1. 播放烟花
         triggerRandomConfetti();
 
-        // 2. 连击判定
         comboCount++;
         if (comboCount >= 2 && comboCount <= 4) showPraise(praises[0]);
         else if (comboCount >= 5 && comboCount <= 7) showPraise(praises[1]);
         else if (comboCount >= 8 && comboCount <= 10) showPraise(praises[2]);
         else if (comboCount > 10) showPraise(praises[3]);
 
-        // 3. 统计数据
         if (isFirstAttempt) {
             correctCount++;
             totalCount++;
             saveData();
         }
         updateStats();
-        
-        // 4. 音效
         dingSound.currentTime = 0;
         dingSound.play().catch(e => {});
 
     } else {
-        // --- 答错逻辑 ---
         if (isFirstAttempt) {
             totalCount++;
             const now = new Date();
@@ -186,15 +173,12 @@ function updateErrorListUI() {
 }
 
 function updateStats() {
-    // 1. 更新总数
     document.getElementById('total-count').innerText = `${totalCount}`;
     
-    // 2. 更新正确率 (Rate) - 恢复显示
     const rate = totalCount === 0 ? 0 : Math.round((correctCount / totalCount) * 100);
     const accuracyEl = document.getElementById('accuracy');
     if (accuracyEl) accuracyEl.innerText = `${rate}%`;
 
-    // 3. 更新等级
     let currentRank = ranks[0];
     for (let i = 0; i < rankThresholds.length; i++) {
         if (totalCount >= rankThresholds[i]) currentRank = ranks[i];
@@ -209,11 +193,24 @@ document.getElementById('review-btn').onclick = () => {
 document.getElementById('back-btn').onclick = () => {
     document.getElementById('review-page').classList.add('hidden');
 };
+
+// Clear Mistakes (仅清空错题)
 document.getElementById('clear-btn').onclick = () => {
-    if(confirm("Clear all mistakes?")) {
+    if(confirm("Clear all mistakes history?")) {
         errorBook = [];
         updateErrorListUI();
         saveData();
+    }
+};
+
+// Reset Stats (仅重置主页面统计)
+document.getElementById('reset-btn').onclick = () => {
+    if(confirm("Reset all game stats (Count, Rank, Accuracy)?")) {
+        totalCount = 0;
+        correctCount = 0;
+        comboCount = 0;
+        updateStats(); // 更新界面
+        saveData(); // 保存归零后的状态
     }
 };
 
@@ -232,6 +229,5 @@ document.getElementById('range-select').onchange = (e) => {
     generateQuestion();
 };
 
-// 启动
 loadData();
 generateQuestion();
